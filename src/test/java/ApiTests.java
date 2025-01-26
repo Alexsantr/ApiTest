@@ -3,7 +3,6 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
@@ -89,6 +88,8 @@ public class ApiTests {
                 .statusCode(201)
                 .body("name", is("Alex"))
                 .body("job", is("QR"));
+
+
     }
 
     @Test
@@ -125,5 +126,37 @@ public class ApiTests {
                 .statusCode(200)
                 .body("name", is("Alexander"))
                 .body("job", is("QA Automation"));
+    }
+
+    @Test
+    @DisplayName("Удаление созданого пользователя")
+    void SuccessDeleteUserTest() {
+        String userData = """
+                {"name": "Alex",
+                "job": "QR"
+                }""";
+        String userid = given()
+                .body(userData)
+                .contentType(ContentType.JSON)
+                .when()
+                .log().uri()
+                .post("/users")
+
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        given()
+                .log().uri()
+                .delete("/users/" + userid)
+                .then()
+                .log().status()
+                .log().body()
+                .statusCode(204);
+
+
     }
 }
