@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
-
 public class ApiTests {
     @BeforeAll
     public static void setUp() {
@@ -156,7 +155,5 @@ public class ApiTests {
                 .log().status()
                 .log().body()
                 .statusCode(204);
-
-
     }
 }
