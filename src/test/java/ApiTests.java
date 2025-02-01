@@ -5,6 +5,7 @@ import Models.UpdateUserResponseModel;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import static io.qameta.allure.Allure.step;
@@ -13,7 +14,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import static spec.TestSpec.*;
 
-
+@Tag("Api_tests")
 public class ApiTests {
     @BeforeAll
     public static void setUp() {
