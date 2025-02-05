@@ -1,17 +1,15 @@
+import io.restassured.RestAssured;
 import models.CheckUserModel;
 import models.CreateUserRequestModel;
 import models.CreateUserResponseModel;
 import models.UpdateUserResponseModel;
-import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.*;
 
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static spec.TestSpec.*;
 
 @Tag("Api_tests")
@@ -31,6 +29,7 @@ public class ApiTests {
                                 .get("/users/2")
                                 .then()
                                 .spec(statusCode200Spec));
+        Assertions.assertNotNull(requestSpec);
     }
 
 
@@ -42,7 +41,10 @@ public class ApiTests {
                         given(requestSpec)
                                 .get("/users/213")
                                 .then()
-                                .spec(statusCode404Spec));
+                                .spec(statusCode404Spec)
+                                .body(Matchers.anything()));
+
+
     }
 
     @Test
@@ -60,6 +62,12 @@ public class ApiTests {
             assertThat(response.getData().getEmail()).isEqualTo("janet.weaver@reqres.in");
             assertThat(response.getData().getFirst_name()).isEqualTo("Janet");
             assertThat(response.getData().getLast_name()).isEqualTo("Weaver");
+
+
+            Assertions.assertEquals(2, response.getData().getId(), "ID пользователя должно быть 2");
+            Assertions.assertEquals("janet.weaver@reqres.in", response.getData().getEmail(), "Email пользователя не совпадает");
+            Assertions.assertEquals("Janet", response.getData().getFirst_name(), "Имя пользователя не совпадает");
+            Assertions.assertEquals("Weaver", response.getData().getLast_name(), "Фамилия пользователя не совпадает");
 
         });
 
@@ -81,6 +89,7 @@ public class ApiTests {
                         .post("/users")
                         .then()
                         .spec(statusCode201Spec));
+        Assertions.assertNotNull(userData, "Данные в ответе не должны быть null");
     }
 
     @Test
@@ -107,6 +116,11 @@ public class ApiTests {
             assertThat(response.getJobs()).isEqualTo("QR");
             assertThat(response.getId()).isNotNull();
             assertThat(response.getCreatedAt()).isNotNull();
+
+            Assertions.assertEquals("Alex", response.getName(), "Имя пользователя не совпадает");
+            Assertions.assertEquals("QR", response.getJobs(), "Работа пользователя не совпадает");
+            Assertions.assertNotNull(response.getId(), "ID пользователя не должен быть null");
+            Assertions.assertNotNull(response.getCreatedAt(), "Дата создания не должна быть null");
         });
     }
 
@@ -145,6 +159,10 @@ public class ApiTests {
             assertThat(response.getName()).isEqualTo("Alexander");
             assertThat(response.getJobs()).isEqualTo("QA Automation");
             assertThat(response.getUpdatedAt()).isNotNull();
+
+            Assertions.assertEquals("Alexander", response.getName(), "Имя пользователя не совпадает");
+            Assertions.assertEquals("QA Automation", response.getJobs(), "Работа пользователя не совпадает");
+            assertNotNull(response.getUpdatedAt(), "Дата обновления не должна быть null");
         });
 
     }
