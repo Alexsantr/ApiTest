@@ -1,8 +1,8 @@
-package Models;
+package models;
 
 import lombok.Data;
 
 @Data
 public class CreateUserRequestModel {
-    String name,jobs;
+    String name, jobs;
 }

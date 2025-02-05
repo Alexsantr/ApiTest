@@ -1,8 +1,8 @@
-package Models;
+package models;
 
 import lombok.Data;
 
 @Data
 public class CreateUserResponseModel {
-    String name,jobs,id,createdAt;
+    String name, jobs, id, createdAt;
 }

@@ -1,7 +1,7 @@
-import Models.CheckUserModel;
-import Models.CreateUserRequestModel;
-import Models.CreateUserResponseModel;
-import Models.UpdateUserResponseModel;
+import models.CheckUserModel;
+import models.CreateUserRequestModel;
+import models.CreateUserResponseModel;
+import models.UpdateUserResponseModel;
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -27,10 +27,10 @@ public class ApiTests {
     void singleUsersHaveTest() {
         step(
                 "Проверка наличия пользователя", () ->
-        given(requestSpec)
-                .get("/users/2")
-                .then()
-                .spec(statusCode200Spec));
+                        given(requestSpec)
+                                .get("/users/2")
+                                .then()
+                                .spec(statusCode200Spec));
     }
 
 
@@ -39,10 +39,10 @@ public class ApiTests {
     void unSingleUsersHaveTest() {
         step(
                 "Проверка отсутствия пользователя", () ->
-        given(requestSpec)
-                .get("/users/213")
-                .then()
-                .spec(statusCode404Spec));
+                        given(requestSpec)
+                                .get("/users/213")
+                                .then()
+                                .spec(statusCode404Spec));
     }
 
     @Test
@@ -74,13 +74,13 @@ public class ApiTests {
         userData.setName("");
         userData.setJobs("");
 
-       step("Создаем пользователя с пустыми данными", () ->
-        given(requestSpec)
-                .body(userData)
-                .when()
-                .post("/users")
-                .then()
-                .spec(statusCode201Spec));
+        step("Создаем пользователя с пустыми данными", () ->
+                given(requestSpec)
+                        .body(userData)
+                        .when()
+                        .post("/users")
+                        .then()
+                        .spec(statusCode201Spec));
     }
 
     @Test

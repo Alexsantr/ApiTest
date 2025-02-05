@@ -1,9 +1,9 @@
-package Models;
+package models;
 
 import lombok.Data;
 
 @Data
-public class Support {
+public class SupportModel {
     private String url;
     private String text;
 }

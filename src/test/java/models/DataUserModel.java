@@ -1,9 +1,9 @@
-package Models;
+package models;
 
 import lombok.Data;
 
 @Data
-public class DataUser {
+public class DataUserModel {
     private int id;
     private String email;
     private String first_name;
