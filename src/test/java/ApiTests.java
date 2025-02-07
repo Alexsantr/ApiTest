@@ -3,13 +3,13 @@ import models.CheckUserModel;
 import models.CreateUserRequestModel;
 import models.CreateUserResponseModel;
 import models.UpdateUserResponseModel;
-import org.hamcrest.Matchers;
+
 import org.junit.jupiter.api.*;
+
 
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static spec.TestSpec.*;
 
 @Tag("Api_tests")
@@ -23,26 +23,42 @@ public class ApiTests {
     @Test
     @DisplayName("Проверка наличия пользователя")
     void singleUsersHaveTest() {
-        step(
+        CheckUserModel response = step(
                 "Проверка наличия пользователя", () ->
                         given(requestSpec)
-                                .get("/users/2")
+                                .get("/users/1")
                                 .then()
-                                .spec(statusCode200Spec));
-        Assertions.assertNotNull(requestSpec);
+                                .spec(statusCode200Spec)
+                                .extract().as(CheckUserModel.class));
+
+        step("Проверяем данных пользователя", () ->
+        {
+            Assertions.assertAll(
+                    () -> assertThat(response.getData().getId()).isEqualTo(1),
+                    () -> assertThat(response.getData().getEmail()).isEqualTo("george.bluth@reqres.in"),
+                    () -> assertThat(response.getData().getFirst_name()).isEqualTo("George"),
+                    () -> assertThat(response.getData().getLast_name()).isEqualTo("Bluth")
+            );
+
+
+        });
+
+
     }
 
 
     @Test
     @DisplayName("Проверка отсутствия пользователя")
     void unSingleUsersHaveTest() {
-        step(
+        String respose = step(
                 "Проверка отсутствия пользователя", () ->
                         given(requestSpec)
                                 .get("/users/213")
                                 .then()
                                 .spec(statusCode404Spec)
-                                .body(Matchers.anything()));
+                                .extract()
+                                .asString());
+        assertThat(respose).isEqualTo("{}");
 
 
     }
@@ -62,12 +78,6 @@ public class ApiTests {
             assertThat(response.getData().getEmail()).isEqualTo("janet.weaver@reqres.in");
             assertThat(response.getData().getFirst_name()).isEqualTo("Janet");
             assertThat(response.getData().getLast_name()).isEqualTo("Weaver");
-
-
-            Assertions.assertEquals(2, response.getData().getId(), "ID пользователя должно быть 2");
-            Assertions.assertEquals("janet.weaver@reqres.in", response.getData().getEmail(), "Email пользователя не совпадает");
-            Assertions.assertEquals("Janet", response.getData().getFirst_name(), "Имя пользователя не совпадает");
-            Assertions.assertEquals("Weaver", response.getData().getLast_name(), "Фамилия пользователя не совпадает");
 
         });
 
@@ -116,11 +126,6 @@ public class ApiTests {
             assertThat(response.getJobs()).isEqualTo("QR");
             assertThat(response.getId()).isNotNull();
             assertThat(response.getCreatedAt()).isNotNull();
-
-            Assertions.assertEquals("Alex", response.getName(), "Имя пользователя не совпадает");
-            Assertions.assertEquals("QR", response.getJobs(), "Работа пользователя не совпадает");
-            Assertions.assertNotNull(response.getId(), "ID пользователя не должен быть null");
-            Assertions.assertNotNull(response.getCreatedAt(), "Дата создания не должна быть null");
         });
     }
 
@@ -160,9 +165,6 @@ public class ApiTests {
             assertThat(response.getJobs()).isEqualTo("QA Automation");
             assertThat(response.getUpdatedAt()).isNotNull();
 
-            Assertions.assertEquals("Alexander", response.getName(), "Имя пользователя не совпадает");
-            Assertions.assertEquals("QA Automation", response.getJobs(), "Работа пользователя не совпадает");
-            assertNotNull(response.getUpdatedAt(), "Дата обновления не должна быть null");
         });
 
     }
