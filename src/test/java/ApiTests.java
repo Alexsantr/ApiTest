@@ -1,17 +1,15 @@
+import io.restassured.RestAssured;
 import models.CheckUserModel;
 import models.CreateUserRequestModel;
 import models.CreateUserResponseModel;
 import models.UpdateUserResponseModel;
-import io.restassured.RestAssured;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
+
+import org.junit.jupiter.api.*;
+
 
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import static spec.TestSpec.*;
 
 @Tag("Api_tests")
@@ -25,24 +23,44 @@ public class ApiTests {
     @Test
     @DisplayName("Проверка наличия пользователя")
     void singleUsersHaveTest() {
-        step(
+        CheckUserModel response = step(
                 "Проверка наличия пользователя", () ->
                         given(requestSpec)
-                                .get("/users/2")
+                                .get("/users/1")
                                 .then()
-                                .spec(statusCode200Spec));
+                                .spec(statusCode200Spec)
+                                .extract().as(CheckUserModel.class));
+
+        step("Проверяем данных пользователя", () ->
+        {
+            Assertions.assertAll(
+                    () -> assertThat(response.getData().getId()).isEqualTo(1),
+                    () -> assertThat(response.getData().getEmail()).isEqualTo("george.bluth@reqres.in"),
+                    () -> assertThat(response.getData().getFirst_name()).isEqualTo("George"),
+                    () -> assertThat(response.getData().getLast_name()).isEqualTo("Bluth")
+            );
+
+
+        });
+
+
     }
 
 
     @Test
     @DisplayName("Проверка отсутствия пользователя")
     void unSingleUsersHaveTest() {
-        step(
+        String respose = step(
                 "Проверка отсутствия пользователя", () ->
                         given(requestSpec)
                                 .get("/users/213")
                                 .then()
-                                .spec(statusCode404Spec));
+                                .spec(statusCode404Spec)
+                                .extract()
+                                .asString());
+        assertThat(respose).isEqualTo("{}");
+
+
     }
 
     @Test
@@ -81,6 +99,7 @@ public class ApiTests {
                         .post("/users")
                         .then()
                         .spec(statusCode201Spec));
+        Assertions.assertNotNull(userData, "Данные в ответе не должны быть null");
     }
 
     @Test
@@ -145,6 +164,7 @@ public class ApiTests {
             assertThat(response.getName()).isEqualTo("Alexander");
             assertThat(response.getJobs()).isEqualTo("QA Automation");
             assertThat(response.getUpdatedAt()).isNotNull();
+
         });
 
     }
